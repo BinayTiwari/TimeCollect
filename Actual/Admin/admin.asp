@@ -59,7 +59,7 @@
 	IF SESSION("USerType") = "1" THEN 
 	 	strSQL = "   SELECT SiteID,SiteName FROM [TC_Sites] WHERE Active = 1 ORDER BY SiteName "
 	ELSE
-		strSQL = "   SELECT        TC_Sites.SiteID, TC_Sites.SiteName FROM   TC_Sites INNER JOIN  TC_Users ON TC_Sites.SiteID = TC_Users.UserSiteID WHERE  (TC_Sites.Active = 1 and UserID = "&Session("UserID")&") ORDER BY TC_Users.SiteName"
+		strSQL = "   SELECT        TC_Sites.SiteID, TC_Sites.SiteName FROM   TC_Sites INNER JOIN  TC_Users ON TC_Sites.SiteID = TC_Users.UserSiteID WHERE  (TC_Sites.Active = 1 and UserID = "&Session("UserID")&") ORDER BY TC_Sites.SiteName"
 	END IF	
 	rsCommon.open strSQL,adoCon,1
 			IF rsCommon.recordcount =0 Then
@@ -140,7 +140,7 @@
 						<table width="75%"  border="0">
 						<TR><TD colspan="9">TimeCollect data</TD></TR>
   <tr>
-    <td>ID</td>
+    <td>Time CollectID</td>
     <td>Site Name</td>
     <td>Dept Name</td>
     <td>User Card ID</td>
@@ -152,7 +152,7 @@
   </tr>
   <%
   	'DIM arrAvailable
- 	strSQL = "SELECT TC_TimeCollect.userCardID,  TC_Sites.SiteName, TC_Dept.[DeptName ],TC_TimeCollect.[date ], TC_TimeCollect.[StartTime ], TC_TimeCollect.EndTime,"&_
+ 	strSQL = "SELECT TimeCollectID, TC_Sites.SiteName, TC_Dept.[DeptName ],TC_TimeCollect.userCardID,TC_TimeCollect.[date ], TC_TimeCollect.[StartTime ], TC_TimeCollect.EndTime,"&_
 			 " TC_TimeCollect.TotalTime, TC_TimeCollect.[IPaddress ]FROM   TC_TimeCollect INNER JOIN  TC_Sites ON TC_TimeCollect.siteID = TC_Sites.SiteID INNER JOIN "&_
              " TC_Dept ON TC_TimeCollect.DeptID = TC_Dept.DeptID ORDER BY date DESC "
 	Set rsCommon = CreateObject("ADODB.Recordset")
@@ -174,15 +174,15 @@
   
 
   <tr>
-    <td><%=No%></td>
     <td><%=rsCommon(0)%></td>
     <td><%=rsCommon(1)%></td>
     <td><%=rsCommon(2)%></td>
     <td><%=rsCommon(3)%></td>
     <td><%=rsCommon(4)%></td>
-	<td><%=rsCommon(5)%></td>
+    <td><%=rsCommon(5)%></td>
 	<td><%=rsCommon(6)%></td>
 	<td><%=rsCommon(7)%></td>
+	<td><%=rsCommon(8)%></td>
   </tr>
   <%  
 	No = No + 1  
