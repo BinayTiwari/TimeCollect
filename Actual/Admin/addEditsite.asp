@@ -1,21 +1,21 @@
 <!--#include file="inc_header.asp" -->
 <%
 
-DIM ErrorMessage
-IF Request.ServerVariables("REQUEST_METHOD") = "POST" Then	
-IF Request.Form("Update") <> "" THEN
-	
-		strSQL = " Update TC_Sites SET SiteName = '"&Request.Form("SiteName")&"',Active = '"&Request.Form("Active")&"'  WHERE SiteID = " &Request.Form("Update")
+	DIM ErrorMessage
+	IF Request.ServerVariables("REQUEST_METHOD") = "POST" Then
 		
-ELSE
-	strSQL = " INSERT INTO TC_Sites (Active,SiteName)  Values('"&Request.Form("Active")&"','"&Request.Form("SiteName")&"')"
+		IF Request.Form("Update") <> "" THEN
 	
-END IF
-Response.Write(strSQL)
-	adoCon.Execute(strSQL)
-	Response.Redirect("addEditSite.asp")
+			strSQL = " Update TC_Sites SET SiteName = '"&Request.Form("SiteName")&"',Active = '"&Request.Form("Active")&"'  WHERE SiteID = " &Request.Form("Update")
+		ELSE
+			strSQL = " INSERT INTO TC_Sites (Active,SiteName)  Values('"&Request.Form("Active")&"','"&Request.Form("SiteName")&"')"
+	
+		END IF
+	
+		adoCon.Execute(strSQL)
+		Response.Redirect("addEditSite.asp")
 			
-END IF	
+	END IF	
 IF Request.QueryString("ID") <> "" THEN
 	strSQL = "Select SiteID,SiteName,Active FROM [TC_Sites]  WHERE SiteID = "&Request.QueryString("ID")
 	updatevalue = Request.QueryString("ID")

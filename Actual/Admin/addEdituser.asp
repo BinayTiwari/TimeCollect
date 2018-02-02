@@ -2,20 +2,28 @@
 <%
 
 DIM ErrorMessage
+DIM UserExist : UserExist = 0
 IF Request.ServerVariables("REQUEST_METHOD") = "POST" Then	
-IF Request.Form("Update") <> "" THEN
+	IF Request.Form("Update") <> "" THEN
 	
 		strSQL = " Update TC_Users SET Active = '"&Request.Form("isActive")&"',UserType = '"&Request.Form("AdminType")&"' ,UserEmail = '"&Request.Form("txtUserName")&"',"&_
 				 "  [UserPassword ] = '"&Request.Form("txtPassword")&"' ,UserSiteID = '"&Request.Form("Site")&"',UserDeptID =  '"&Request.Form("department")&"'  WHERE UserID = " &Request.Form("Update")
 		
-ELSE
+	ELSE
+	
+	UserExist = IsUserExist(Request.Form("txtUserName"))
+	IF UserExist = 1 THEN
+		Response.Redirect("addedituser.asp?Message=1")
+	END IF
+
 	strSQL = " INSERT INTO TC_Users (Active,UserType,UserEmail,[UserPassword ],UserSiteID,UserDeptID)  Values('"&Request.Form("isActive")&"','"&Request.Form("AdminType")&"','"&Request.Form("txtUserName")&"','"&Request.Form("txtPassword")&"','"&Request.Form("Site")&"','"&Request.Form("department")&"')"
 	
 END IF
-Response.Write(strSQL)
+
 	adoCon.Execute(strSQL)
 	Response.Redirect("addedituser.asp")
-			
+
+		
 END IF	
 IF Request.QueryString("ID") <> "" THEN
 	strSQL = "SELECT Active,UserType,UserEmail,[UserPassword ],UserSiteID,UserDeptID FROM TC_Users WHERE UserID = "&Request.QueryString("ID")
@@ -92,6 +100,7 @@ END IF
                 </div>
 				       <form name="login" class="contact-form" method="post" action="addEdituser.asp">
 					   <table width="75%"  border="0">
+					   <tr><td colspan="6"><%IF Request.QueryString("Message") <> "" Then Response.Write("User Already Exist") END IF%></td></tr>
   <tr>
     <td><input id="name" name="txtUserName" type="text" placeholder="User Name" value="<%=UserEmail%>" required="yes"></td>
     <td><input id="name" name="txtPassword" type="text" placeholder="Password" value="<%=UserPassword%>" required="yes"> </td>

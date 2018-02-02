@@ -62,6 +62,23 @@ Function writeXlsHttpHeaders(filename)
 
 END Function
 
+Function IsUserExist(UserName)
+
+strSQL = "SELECT UserEmail FROM TC_Users WHERE UserEmail = '"&UserName&"'" 
+		rsCommon.open strSQL,adoCon,1
+			IF rsCommon.recordcount =0 Then
+				IsUserExist = 0
+			
+			ELSE
+				IsUserExist = 1
+				
+				
+			END IF
+				
+	
+			
+END FUNCTION
+
 ''SUB getXlsStart()
     
   ''  Response.Write("<html><BR>""<head><br> <meta http-equiv=\Content-Type\content=\text/html; charset=UTF-8\><br>"&_
