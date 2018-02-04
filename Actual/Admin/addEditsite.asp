@@ -6,16 +6,18 @@
 		
 		IF Request.Form("Update") <> "" THEN
 	
-			strSQL = " Update TC_Sites SET SiteName = '"&Request.Form("SiteName")&"',Active = '"&Request.Form("Active")&"'  WHERE SiteID = " &Request.Form("Update")
+			strSQL = " Update TC_Sites SET SiteName = N'"&Request.Form("SiteName")&"',Active = '"&Request.Form("Active")&"'  WHERE SiteID = " &Request.Form("Update")
 		ELSE
-			strSQL = " INSERT INTO TC_Sites (Active,SiteName)  Values('"&Request.Form("Active")&"','"&Request.Form("SiteName")&"')"
+			strSQL = " INSERT INTO TC_Sites (Active,SiteName)  Values('"&Request.Form("Active")&"',N'"&Request.Form("SiteName")&"')"
 	
 		END IF
-	
+
 		adoCon.Execute(strSQL)
 		Response.Redirect("addEditSite.asp")
 			
 	END IF	
+
+
 IF Request.QueryString("ID") <> "" THEN
 	strSQL = "Select SiteID,SiteName,Active FROM [TC_Sites]  WHERE SiteID = "&Request.QueryString("ID")
 	updatevalue = Request.QueryString("ID")

@@ -49,17 +49,18 @@
 				<a href="addEditdept.asp" class="dt-sc-button small read-more"> Add Edit Department <span class="fa fa-chevron-circle-right"> </span></a>
 				<a href="entryLog.asp" class="dt-sc-button small read-more"> Entry Login <span class="fa fa-chevron-circle-right"> </span></a>
 				<%END IF %>
-                   <form name="login" class="contact-form" method="post" action="report.asp">
+                   <form name="login" class="contact-form" method="post" >
 				   
                         	<table width="75%"  border="0">
     <tr>
-    <td><input name="fromDate" type="date" placeholder="From Date" required="yes" > </td>  <td><input name="toDate" type="date" placeholder="To Date" required="yes"> </td>
+    <td><input name="fromDate" type="date" placeholder="From Date" required="yes" value="<%=Request.Form("fromDate")%>" > </td> 
+	 <td><input name="toDate" type="date" placeholder="To Date" required="yes" value="<%=Request.Form("toDate")%>"> </td>
 	<td >
 	<% 
 	IF SESSION("USerType") = "1" THEN 
 	 	strSQL = "   SELECT SiteID,SiteName FROM [TC_Sites] WHERE Active = 1 ORDER BY SiteName "
 	ELSE
-		strSQL = "   SELECT        TC_Sites.SiteID, TC_Sites.SiteName FROM   TC_Sites INNER JOIN  TC_Users ON TC_Sites.SiteID = TC_Users.UserSiteID WHERE  (TC_Sites.Active = 1 and UserID = "&Session("UserID")&") ORDER BY TC_Sites.SiteName"
+		strSQL = "   SELECT   TC_Sites.SiteID, TC_Sites.SiteName FROM   TC_Sites INNER JOIN  TC_Users ON TC_Sites.SiteID = TC_Users.UserSiteID WHERE  (TC_Sites.Active = 1 and UserID = "&Session("UserID")&") ORDER BY TC_Sites.SiteName"
 	END IF	
 	rsCommon.open strSQL,adoCon,1
 			IF rsCommon.recordcount =0 Then
@@ -80,7 +81,7 @@
 			
 			
   
-	<select name="SiteName">
+	<select name="SiteName" >
 	<option value="">---Select Site---</option>
 	<%  For i = 0 To Ubound(arrAvailable,2)%>
 	<option value="<%=arrAvailable(0,i)%>"><%=arrAvailable(1,i)%></option>
@@ -99,7 +100,7 @@
 	Set rsCommon = CreateObject("ADODB.Recordset")
 	rsCommon.open strSQL,adoCon,1
 			IF rsCommon.recordcount =0 Then
-				rsCommon.close
+				''rsCommon.close
 				''adoCon.close
 				set rsCommon=nothing
 				''set adoCon=nothing
@@ -116,10 +117,10 @@
 	<select name="department">
 	<option value="">---Select department---</option>
 		<%  For i = 0 To Ubound(arrAvailable,2)%>
-	<option value="<%=arrAvailable(1,i)%>"><%=arrAvailable(1,i)%></option>
+	<option value="<%=arrAvailable(0,i)%>"><%=arrAvailable(1,i)%></option>
 	<%NEXT%>
 	</select></td>
-	<td><input name="txtUserCardID" type="text" Placeholder="Card ID"></td>
+	<td><input name="txtUserCardID" type="text" Placeholder="Card ID" value="<%=Request.Form("txtUserCardID")%>" ></td>
   </tr>
   <tr>
     <td><select name="Sortby" required="yes"> <option value="">---Sort By---</option><option value="StartTime Desc">Date Desc</option> <option value="StartTime Asc">Date Asc</option> <option value="SiteName">Site Name</option></select></td> 
@@ -128,15 +129,83 @@
  <option value="TopUsers">Top Users </option>
 </select></td>
 	<td > </td>
-	<td></td>
-	<td><input name="btnLogin" type="submit" id="btnLogin" class="dt-sc-button medium" value="Run Filter">
+	<td><input name="btnLogin" type="submit" formaction="admin.asp" id="btnLogin" class="dt-sc-button medium" value="Run Filter"></td>
+	<td><input name="btnExportExcel" formaction="report.asp" type="submit" id="btnExportExcel" class="dt-sc-button medium" value="Export Excel">
      </td>
   </tr>
   
 </table>
                        
   </form>
+<%
+IF Request.ServerVariables("REQUEST_METHOD") = "POST" Then				
+
 						
+	IF Request.Form("Report") = "TopUsers" THEN
+		strSQL = " SELECT   TC_Sites.SiteName, TC_Dept.[DeptName ],  TC_TimeCollect.userCardID, 'N/A' AS DATE, 'N/A' As StartTime, 'N/A' AS EndTime, CAST(DATEADD(ms,SUM(DATEDIFF(ms, '00:00:00', CAST(TC_TimeCollect.TotalTime AS time))), '00:00:00') AS TIME) AS totalTime FROM TC_TimeCollect INNER JOIN TC_Sites ON "&_
+ 				 " TC_TimeCollect.siteID = TC_Sites.SiteID INNER JOIN TC_Dept ON TC_TimeCollect.DeptID = TC_Dept.DeptID GROUP BY TC_TimeCollect.userCardID, TC_Sites.SiteName, TC_Dept.[DeptName ]"
+	ELSE			   
+
+ 		strSQL = " SELECT TC_Sites.SiteName, TC_Dept.[DeptName ], TC_TimeCollect.userCardID, CAST(TC_TimeCollect.[date ] AS DATE), TC_TimeCollect.[StartTime ] , "&_
+			 " TC_TimeCollect.EndTime, TC_TimeCollect.TotalTime FROM  TC_TimeCollect INNER JOIN TC_Sites ON TC_TimeCollect.siteID = TC_Sites.SiteID INNER JOIN " &_
+             " TC_Dept ON TC_TimeCollect.DeptID = TC_Dept.DeptID WHERE DATE BETWEEN '"&CDATE(Request.Form("fromDate"))&"' and '"&CDATE(Request.Form("toDate"))&"' "
+			 
+				IF Request.Form("Site")	<> "" THEN 
+			strSQL = strSQL & " and  TC_Sites.SiteID = '"&Request.Form("Site")&"'"
+		END IF
+		
+		IF Request.Form("department")	<> "" THEN 
+			strSQL = strSQL & " and  TC_Dept.DeptID = '"&Request.Form("department")&"'"
+		END IF
+		
+		
+		IF Request.Form("txtUserCardID")	<> "" THEN 
+			strSQL = strSQL & " and userCardID = '"&Request.Form("txtUserCardID")&"'"
+		END IF
+		
+		strSQL = strSQL & " ORDER BY "&Request.Form("Sortby")&""	 
+	END IF	
+
+	
+		
+		Set rsCommon = CreateObject("ADODB.Recordset")
+		rsCommon.open strSQL,adoCon,1
+			IF rsCommon.recordcount =0 Then
+				rsCommon.close
+				''adoCon.close
+				set rsCommon=nothing
+				''set adoCon=nothing
+				arrAvailable = arrAvailable(0,0)
+			
+			ELSE
+				arrAvailable = rsCommon.GetRows()
+				rsCommon.close
+				''adoCon.close
+				set rsCommon=nothing
+				
+				''set adoCon=nothing
+			END IF
+	Response.Write("<br><h1><strong>"&Response.Write(Request.form("Report"))&"</strong></h1>")		
+	Response.Write("<Table border=1><TR><TD><B>Site Name</b></TD><TD><B>Dept Name</b></TD><TD><B>userCardID</b></TD><TD><B>Date</b></TD><TD><B>Start Time</b></TD><TD><B>End Time</b></TD><TD><B>Total Time</b></TD></TR>")
+			
+	 
+    FOR i=0 TO Ubound(arrAvailable,2)
+	
+        Response.Write("<tr>")
+		
+        For  j=0 To UBOUND(arrAvailable,1)
+		    Response.Write("<td>")
+            Response.Write(arrAvailable(j,i))
+            Response.Write("</td>")
+			''Response.Write(j)
+        NEXT
+        Response.Write("</tr>")
+     NEXT   
+	  Response.Write("</table>")
+		
+			
+END IF
+						%>
 						<table width="75%"  border="0">
 						<TR><TD colspan="9">TimeCollect data</TD></TR>
   <tr>
