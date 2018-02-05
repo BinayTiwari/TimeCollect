@@ -16,7 +16,7 @@
                         <span class="fa fa-envelope"></span>
 					</p>
                     <p class="phone-no">
-                        <i>+1 959 552 5963</i>
+                        <i>+1 959 552 59637777777777777</i>
                         <span class="fa fa-phone"></span>
                 	</p>        
                 </div>
