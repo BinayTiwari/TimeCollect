@@ -123,7 +123,12 @@
 	<td><input name="txtUserCardID" type="text" Placeholder="Card ID" value="<%=Request.Form("txtUserCardID")%>" ></td>
   </tr>
   <tr>
-    <td><select name="Sortby" required="yes"> <option value="">---Sort By---</option><option value="StartTime Desc">Date Desc</option> <option value="StartTime Asc">Date Asc</option> <option value="SiteName">Site Name</option></select></td> 
+    <td><select name="Sortby" required="yes"> <option value="">---Sort By---</option>
+	<option value="StartTime Desc">Date Desc</option> 
+	<option value="StartTime Asc">Date Asc</option>
+	 <option value="SiteName ASC">Site Name</option>
+	 <option value="DepartmentName ASC">Site Name</option>
+	 </select></td> 
 	 <td><select name="report" required="yes"> <option value="">---Select Report ---</option><option value="SiteActivity">Site Activity 
 </option> <option>Dept Activity </option> <option>User Activity </option>
  <option value="TopUsers">Top Users </option>
