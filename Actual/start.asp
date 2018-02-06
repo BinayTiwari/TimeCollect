@@ -18,6 +18,8 @@
 <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link href="css/shortcodes.css" rel="stylesheet" type="text/css">
 <link rel='stylesheet' id='layerslider-css' href="css/layerslider.css" type='text/css' media='all' />
+<link href="css/notosanshebrew.css" rel="stylesheet" type="text/css">
+<link href="css/opensanshebrew.css" rel="stylesheet" type="text/css">
 <!--prettyPhoto-->
 <link href="css/prettyPhoto.css" rel="stylesheet" type="text/css" media="all" />   
 <!--[if IE 7]>
