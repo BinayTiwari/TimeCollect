@@ -30,7 +30,7 @@ DIM arrAvailable
 		strSQL = strSQL & " ORDER BY "&Request.Form("Sortby")&""	 
 	END IF	
 		
-		Response.Write(strSQL)
+		''Response.Write(strSQL)
 				 
 		rsCommon.open strSQL,adoCon,1
 			IF rsCommon.recordcount =0 Then

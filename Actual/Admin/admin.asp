@@ -127,7 +127,7 @@
 	<option value="StartTime Desc">Date Desc</option> 
 	<option value="StartTime Asc">Date Asc</option>
 	 <option value="SiteName ASC">Site Name</option>
-	 <option value="DepartmentName ASC">Site Name</option>
+	 <option value="DepartmentName ASC">Department Name</option>
 	 </select></td> 
 	 <td><select name="report" required="yes"> <option value="">---Select Report ---</option><option value="SiteActivity">Site Activity 
 </option> <option>Dept Activity </option> <option>User Activity </option>
