@@ -1,4 +1,4 @@
-<%@LANGUAGE="VBSCRIPT" CODEPAGE="1252"%>
+<%@LANGUAGE="VBSCRIPT" CODEPAGE="65001"%>
 <!DOCTYPE HTML>
 <!--[if IE 7 ]>    <html lang="en-gb" class="isie ie7 oldie no-js"> <![endif]-->
 <!--[if IE 8 ]>    <html lang="en-gb" class="isie ie8 oldie no-js"> <![endif]-->
@@ -107,7 +107,7 @@ END IF
 							<p><h1><%="Department Name :" & Request.Cookies("Department") %></h1></p>
 							<p><%=ErrorMessage%></p>
                             <p >
-                                <input name="txtMagneticCard" placeholder ="<%=PlaceHolder%>" value="" autofocus type="text" required="yes" />
+                                <input name="txtMagneticCard" placeholder ="<%=PlaceHolder%>" value="" autofocus type="text" required />
                             </p>
 							<p> 
                                 <input name="btnLogin" type="submit" id="btnSubmit" class="dt-sc-button medium" value="Submit">
