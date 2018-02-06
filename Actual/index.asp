@@ -8,7 +8,7 @@
 <head>
 <meta http-equiv="content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"> 
-<title>Kids Life- Home</title>
+<title>איגוד הכירורגים בישראל</title>
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
