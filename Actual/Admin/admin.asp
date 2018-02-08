@@ -1,4 +1,4 @@
-<!--#include file="inc_header.asp" -->
+<!--#include file="../CommonFile/inc_header.asp" -->
 </head>
 <body class="main">
 	<!--wrapper starts-->
@@ -124,8 +124,8 @@
   </tr>
   <tr>
     <td><select name="Sortby" required="yes"> <option value="">---Sort By---</option>
-	<option value="StartTime Desc">Date Desc</option> 
-	<option value="StartTime Asc">Date Asc</option>
+	<option value="DATE Desc">Date Desc</option> 
+	<option value="DATE Asc">Date Asc</option>
 	 <option value="SiteName ASC">Site Name</option>
 	 <option value="DepartmentName ASC">Department Name</option>
 	 </select></td> 
@@ -148,7 +148,7 @@ IF Request.ServerVariables("REQUEST_METHOD") = "POST" Then
 						
 	IF Request.Form("Report") = "TopUsers" THEN
 		strSQL = " SELECT   TC_Sites.SiteName, TC_Dept.[DeptName ],  TC_TimeCollect.userCardID, 'N/A' AS DATE, 'N/A' As StartTime, 'N/A' AS EndTime, CAST(DATEADD(ms,SUM(DATEDIFF(ms, '00:00:00', CAST(TC_TimeCollect.TotalTime AS time))), '00:00:00') AS TIME) AS totalTime FROM TC_TimeCollect INNER JOIN TC_Sites ON "&_
- 				 " TC_TimeCollect.siteID = TC_Sites.SiteID INNER JOIN TC_Dept ON TC_TimeCollect.DeptID = TC_Dept.DeptID GROUP BY TC_TimeCollect.userCardID, TC_Sites.SiteName, TC_Dept.[DeptName ]"
+ 				 " TC_TimeCollect.siteID = TC_Sites.SiteID INNER JOIN TC_Dept ON TC_TimeCollect.DeptID = TC_Dept.DeptID GROUP BY TC_TimeCollect.userCardID, TC_Sites.SiteName, TC_Dept.[DeptName ] order by totalTime Desc"
 	ELSE			   
 
  		strSQL = " SELECT TC_Sites.SiteName, TC_Dept.[DeptName ], TC_TimeCollect.userCardID, CAST(TC_TimeCollect.[date ] AS DATE), TC_TimeCollect.[StartTime ] , "&_
@@ -171,7 +171,7 @@ IF Request.ServerVariables("REQUEST_METHOD") = "POST" Then
 		strSQL = strSQL & " ORDER BY "&Request.Form("Sortby")&""	 
 	END IF	
 
-	
+	''Response.Write(strSQL)
 		
 		Set rsCommon = CreateObject("ADODB.Recordset")
 		rsCommon.open strSQL,adoCon,1

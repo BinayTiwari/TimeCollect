@@ -101,7 +101,7 @@ SUB writeXls(filename, data, columnCount)
     writeXlsHttpHeaders(filename)
     ''getXlsStart()
 			
-			Response.Write("<H1>"&filename& "Report</H1>")
+			Response.Write("<BR>")
 			Response.Write("<Table border=1><TR><TD><b>Sno</b></TD><TD><B>Site Name</b></TD><TD><B>Dept Name</b></TD><TD><B>userCardID</b></TD><TD><B>Date</b></TD><TD><B>Start Time</b></TD><TD><B>End Time</b></TD><TD><B>Total Time</b></TD></TR>")
 			
 	 

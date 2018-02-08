@@ -1,4 +1,4 @@
-<!--#include file="inc_header.asp" -->
+<!--#include file="../CommonFile/inc_header.asp" -->
 </head>
 <body class="main">
 	<!--wrapper starts-->
