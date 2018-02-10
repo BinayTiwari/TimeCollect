@@ -1,4 +1,5 @@
 <!--#include file="../CommonFile/inc_header.asp" -->
+
 </head>
 <body class="main">
 	<!--wrapper starts-->
@@ -62,6 +63,7 @@
 	ELSE
 		strSQL = "   SELECT   TC_Sites.SiteID, TC_Sites.SiteName FROM   TC_Sites INNER JOIN  TC_Users ON TC_Sites.SiteID = TC_Users.UserSiteID WHERE  (TC_Sites.Active = 1 and UserID = "&Session("UserID")&") ORDER BY TC_Sites.SiteName"
 	END IF	
+
 	rsCommon.open strSQL,adoCon,1
 			IF rsCommon.recordcount =0 Then
 				rsCommon.close
@@ -80,12 +82,15 @@
 			%>
 			
 			
-  
+  <% DIM SiteName : SiteName = Request.Form("SiteName") %>
 	<select name="SiteName" >
 	<option value="">---Select Site---</option>
-	<%  For i = 0 To Ubound(arrAvailable,2)%>
-	<option value="<%=arrAvailable(0,i)%>"><%=arrAvailable(1,i)%></option>
-	<%NEXT%>
+	<%  For i = 0 To Ubound(arrAvailable,2)
+		
+	%>
+	<option <% If CINT(SiteName) = CINT(arrAvailable(0,i)) Then Response.Write(" selected")%>  value="<%=arrAvailable(0,i)%>"><%=arrAvailable(1,i)%></option>
+
+<%NEXT%>
 	</select>
 	</td>
 	<td>
