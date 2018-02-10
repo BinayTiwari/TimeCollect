@@ -82,7 +82,8 @@
 			%>
 			
 			
-  <% DIM SiteName : SiteName = Request.Form("SiteName") %>
+  <% DIM SiteName : SiteName = Request.Form("SiteName") 
+   DIM department : department = Request.Form("department")%>
 	<select name="SiteName" >
 	<option value="">---Select Site---</option>
 	<%  For i = 0 To Ubound(arrAvailable,2)
@@ -122,7 +123,7 @@
 	<select name="department">
 	<option value="">---Select department---</option>
 		<%  For i = 0 To Ubound(arrAvailable,2)%>
-	<option value="<%=arrAvailable(0,i)%>"><%=arrAvailable(1,i)%></option>
+	<option <% If CINT(department) = CINT(arrAvailable(0,i)) Then Response.Write(" selected")%> value="<%=arrAvailable(0,i)%>"><%=arrAvailable(1,i)%></option>
 	<%NEXT%>
 	</select></td>
 	<td><input name="txtUserCardID" type="text" Placeholder="Card ID" value="<%=Request.Form("txtUserCardID")%>" ></td>
@@ -134,9 +135,11 @@
 	 <option value="SiteName ASC">Site Name</option>
 	 <option value="DepartmentName ASC">Department Name</option>
 	 </select></td> 
-	 <td><select name="report" required="yes"> <option value="">---Select Report ---</option><option value="SiteActivity">Site Activity 
-</option> <option>Dept Activity </option> <option>User Activity </option>
- <option value="TopUsers">Top Users </option>
+	 <td><select name="report" required="yes"> <option value="">---Select Report ---</option>
+	 <option <% If Request.Form("report") = "SiteActivity" Then Response.Write(" selected")%> value="SiteActivity">Site Activity </option>
+	 <option <% If Request.Form("report") = "DeptActivity" Then Response.Write(" selected")%> value="DeptActivity">Dept Activity </option>
+	  <option <% If Request.Form("report") = "UserActivity" Then Response.Write(" selected")%> value="UserActivity">User Activity </option>
+ <option <% If Request.Form("report") = "TopUsers" Then Response.Write(" selected")%> value="TopUsers">Top Users </option>
 </select></td>
 	<td > </td>
 	<td><input name="btnLogin" type="submit" formaction="admin.asp" id="btnLogin" class="dt-sc-button medium" value="Run Filter"></td>
