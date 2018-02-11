@@ -8,17 +8,7 @@
         <header>
             <div class="container">
                 <div class="logo">
-                    <a href="../index.html" title="Kids Life"><img src="../images/logo.png" alt="Kids Life" title="Kids Life"></a>
-                </div>
-                <div class="contact-details">
-                    <p class="mail">
-                        <a href="#">contact@kidslife.com</a>
-                        <span class="fa fa-envelope"></span>
-					</p>
-                    <p class="phone-no">
-                        <i>+1 959 552 5963</i>
-                        <span class="fa fa-phone"></span>
-                	</p>        
+                    <a href="../index.asp" title="איגוד הכירורגים בישראל"><img src="../images/logo.png" alt="איגוד הכירורגים בישראל" title="איגוד הכירורגים בישראל"></a>
                 </div>
             </div>
             <!--menu-container starts-->
@@ -53,15 +43,32 @@
                    <form name="login" class="contact-form" method="post" >
 				   
                         	<table width="75%"  border="0">
-    <tr>
-    <td><input name="fromDate" type="date" placeholder="From Date" required="yes" value="<%=Request.Form("fromDate")%>" > </td> 
-	 <td><input name="toDate" type="date" placeholder="To Date" required="yes" value="<%=Request.Form("toDate")%>"> </td>
+ 	<%
+	IF Request.Form("fromDate") = "" THEN
+	 strcurrentdate = day(date) & "-"
+	 IF  month(date) < 10 THEN 
+	 	months = "0" & month(date) 
+	Else 
+		months = month(date) 
+	 END IF 
+	 
+	 strcurrentdate = year(date)  & "-" & months & "-" & day(date)
+	 fromDate = strcurrentdate
+	 toDate = strcurrentdate
+	ELSE 
+	fromDate = Request.Form("fromDate")
+	toDate = Request.Form("toDate")
+	END IF 
+	%>
+    <td><input name="fromDate" type="date" placeholder="From Date" required="yes" value="<%=fromDate%>" > </td> 
+	 <td><input name="toDate" type="date" placeholder="To Date" required="yes" value="<%=toDate%>"> </td>
 	<td >
 	<% 
 	IF SESSION("USerType") = "1" THEN 
 	 	strSQL = "   SELECT SiteID,SiteName FROM [TC_Sites] WHERE Active = 1 ORDER BY SiteName "
 	ELSE
-		strSQL = "   SELECT   TC_Sites.SiteID, TC_Sites.SiteName FROM   TC_Sites INNER JOIN  TC_Users ON TC_Sites.SiteID = TC_Users.UserSiteID WHERE  (TC_Sites.Active = 1 and UserID = "&Session("UserID")&") ORDER BY TC_Sites.SiteName"
+		strSQL = "   SELECT   TC_Sites.SiteID, TC_Sites.SiteName FROM   TC_Sites INNER JOIN  TC_Users ON TC_Sites.SiteID = TC_Users.UserSiteID INNER JOIN "&_
+                  " TC_Dept ON TC_Users.UserDeptID = TC_Dept.DeptID WHERE  (TC_Sites.Active = 1 and UserID = "&Session("UserID")&") ORDER BY TC_Sites.SiteName"
 	END IF	
 
 	rsCommon.open strSQL,adoCon,1
@@ -82,10 +89,16 @@
 			%>
 			
 			
-  <% DIM SiteName : SiteName = Request.Form("SiteName") 
-   DIM department : department = Request.Form("department")%>
+  <% DIM SiteName : SiteName = 0
+  IF Request.Form("SiteName") <> "" THEN
+  SiteName = Request.Form("SiteName")
+  END IF
+   DIM department : department = 0 
+  IF Request.Form("department") <> "" THEN
+  	department = Request.Form("department")
+  END IF%>
 	<select name="SiteName" >
-	<option value="">---Select Site---</option>
+	<option value="">All site</option>
 	<%  For i = 0 To Ubound(arrAvailable,2)
 		
 	%>
@@ -101,7 +114,7 @@
  	strSQL = "  Select DeptID,DeptName FROM TC_Dept ORDER BY DeptName "
 	ELSE
 	
-	strSQL = "  SELECT     DeptName, TC_Users.UserDeptID FROM  TC_Dept INNER JOIN   TC_Users ON TC_Dept.DeptID = TC_Users.UserDeptID WHERE UserID = "&Session("UserID")&"  ORDER BY DeptName "
+	strSQL = "  SELECT  TC_Users.UserDeptID ,   DeptName FROM  TC_Dept INNER JOIN   TC_Users ON TC_Dept.DeptID = TC_Users.UserDeptID WHERE UserID = "&Session("UserID")&"  ORDER BY DeptName "
 	END IF
 	Set rsCommon = CreateObject("ADODB.Recordset")
 	rsCommon.open strSQL,adoCon,1
@@ -121,21 +134,20 @@
 			
 			%>
 	<select name="department">
-	<option value="">---Select department---</option>
+	<option value="">---All department---</option>
 		<%  For i = 0 To Ubound(arrAvailable,2)%>
 	<option <% If CINT(department) = CINT(arrAvailable(0,i)) Then Response.Write(" selected")%> value="<%=arrAvailable(0,i)%>"><%=arrAvailable(1,i)%></option>
 	<%NEXT%>
 	</select></td>
-	<td><input name="txtUserCardID" type="text" Placeholder="Card ID" value="<%=Request.Form("txtUserCardID")%>" ></td>
+	<td><input name="txtUserCardID" type="text16" Placeholder="Card ID" value="<%=Request.Form("txtUserCardID")%>" ></td>
   </tr>
   <tr>
-    <td><select name="Sortby" required="yes"> <option value="">---Sort By---</option>
-	<option value="DATE Desc">Date Desc</option> 
+    <td><select name="Sortby" > <option value="DATE Desc">Date Desc</option>
 	<option value="DATE Asc">Date Asc</option>
 	 <option value="SiteName ASC">Site Name</option>
 	 <option value="DepartmentName ASC">Department Name</option>
 	 </select></td> 
-	 <td><select name="report" required="yes"> <option value="">---Select Report ---</option>
+	 <td><select name="report"> 
 	 <option <% If Request.Form("report") = "SiteActivity" Then Response.Write(" selected")%> value="SiteActivity">Site Activity </option>
 	 <option <% If Request.Form("report") = "DeptActivity" Then Response.Write(" selected")%> value="DeptActivity">Dept Activity </option>
 	  <option <% If Request.Form("report") = "UserActivity" Then Response.Write(" selected")%> value="UserActivity">User Activity </option>
@@ -156,7 +168,7 @@ IF Request.ServerVariables("REQUEST_METHOD") = "POST" Then
 						
 	IF Request.Form("Report") = "TopUsers" THEN
 		strSQL = " SELECT   TC_Sites.SiteName, TC_Dept.[DeptName ],  TC_TimeCollect.userCardID, 'N/A' AS DATE, 'N/A' As StartTime, 'N/A' AS EndTime, CAST(DATEADD(ms,SUM(DATEDIFF(ms, '00:00:00', CAST(TC_TimeCollect.TotalTime AS time))), '00:00:00') AS TIME) AS totalTime FROM TC_TimeCollect INNER JOIN TC_Sites ON "&_
- 				 " TC_TimeCollect.siteID = TC_Sites.SiteID INNER JOIN TC_Dept ON TC_TimeCollect.DeptID = TC_Dept.DeptID GROUP BY TC_TimeCollect.userCardID, TC_Sites.SiteName, TC_Dept.[DeptName ] HAVING DATE BETWEEN '"&CDATE(Request.Form("fromDate"))&"' and '"&CDATE(Request.Form("toDate"))&"' order by totalTime Desc"
+ 				 " TC_TimeCollect.siteID = TC_Sites.SiteID INNER JOIN TC_Dept ON TC_TimeCollect.DeptID = TC_Dept.DeptID GROUP BY TC_TimeCollect.userCardID, TC_Sites.SiteName, TC_Dept.[DeptName ],DATE HAVING DATE BETWEEN '"&CDATE(Request.Form("fromDate"))&"' and '"&CDATE(Request.Form("toDate"))&"' order by totalTime Desc"
 	ELSE			   
 
  		strSQL = " SELECT TC_Sites.SiteName, TC_Dept.[DeptName ], TC_TimeCollect.userCardID, CAST(TC_TimeCollect.[date ] AS DATE), TC_TimeCollect.[StartTime ] , "&_
@@ -233,10 +245,18 @@ END IF
 	<TD>IP Address</TD>
   </tr>
   <%
-  	'DIM arrAvailable
+  	IF SESSION("USerType") = "1" THEN 
  	strSQL = "SELECT TimeCollectID, TC_Sites.SiteName, TC_Dept.[DeptName ],TC_TimeCollect.userCardID,TC_TimeCollect.[date ], TC_TimeCollect.[StartTime ], TC_TimeCollect.EndTime,"&_
 			 " TC_TimeCollect.TotalTime, TC_TimeCollect.[IPaddress ]FROM   TC_TimeCollect INNER JOIN  TC_Sites ON TC_TimeCollect.siteID = TC_Sites.SiteID INNER JOIN "&_
              " TC_Dept ON TC_TimeCollect.DeptID = TC_Dept.DeptID ORDER BY date DESC "
+	ELSE
+	strSQL = "SELECT TC_TimeCollect.TimeCollectID, TC_Sites.SiteName, TC_Dept.[DeptName ], TC_TimeCollect.userCardID, TC_TimeCollect.[date ], TC_TimeCollect.[StartTime ], "&_
+			" TC_TimeCollect.EndTime, TC_TimeCollect.TotalTime, TC_TimeCollect.[IPaddress ] "&_
+			" FROM  TC_TimeCollect INNER JOIN TC_Sites ON TC_TimeCollect.siteID = TC_Sites.SiteID INNER JOIN TC_Dept ON TC_TimeCollect.DeptID = TC_Dept.DeptID INNER JOIN "&_
+            " TC_Users ON TC_Sites.SiteID = TC_Users.UserSiteID AND TC_Dept.DeptID = TC_Users.UserDeptID where TC_Users.UserID = "&Session("UserID")&" ORDER BY date DESC "
+
+	
+	END IF		 
 	Set rsCommon = CreateObject("ADODB.Recordset")
 	rsCommon.open strSQL,adoCon,3
 						
@@ -283,62 +303,6 @@ Loop %>
                 <!--fullwidth-background starts-->
                 
         <!--footer starts-->
-        <footer>
-            <!--footer-widgets-wrapper starts-->
-            <div class="footer-widgets-wrapper">
-                <!--container starts-->
-                <div class="container">
-                    
-                </div>    
-                <!--container ends-->
-            </div>
-            <!--footer-widgets-wrapper ends-->  
-            <div class="copyright">
-        		<div class="container">
-                	<p class="copyright-info">© 2014 Kids Life. All rights reserved. Design by <a href="http://themeforest.net/user/designthemes" title=""> Buddhathemes </a></p>
-        			<div class="footer-links">
-                        <p>Follow us</p>
-                        <ul class="dt-sc-social-icons">
-                        	<li class="facebook"><a href="#"><img src="../images/facebook.png" alt="" title=""></a></li>
-                            <li class="twitter"><a href="#"><img src="../images/twitter.png" alt="" title=""></a></li>
-                            <li class="gplus"><a href="#"><img src="../images/gplus.png" alt="" title=""></a></li>
-                            <li class="pinterest"><a href="#"><img src="../images/pinterest.png" alt="" title=""></a></li>
-                        </ul>
-                    </div>
-        		</div>
-        	</div>  
-        </footer>
-        <!--footer ends-->
-        
-    </div>
-    <!--wrapper ends-->
-    <a href="#" title="Go to Top" class="back-to-top">To Top ↑</a>
-    <!--Java Scripts-->
-    <script type="text/javascript" src="../js/jquery.js"></script>
-	<script type="text/javascript" src="../js/jquery-migrate.min.js"></script>
-
-   
-	<script type="text/javascript" src="../js/jquery.validate.min.js"></script>
-	<script type="text/javascript" src="../js/jquery-easing-1.3.js"></script>
-    <script type="text/javascript" src="../js/jquery.sticky.js"></script>
-    <script type="text/javascript" src="../js/jquery.nicescroll.min.js"></script>
-    <script type="text/javascript" src="../js/jquery.inview.js"></script>
-    <script type="text/javascript" src="../js/validation.js"></script>
-    <script type="text/javascript" src="../js/jquery.tipTip.minified.js"></script>
-    <script type="text/javascript" src="../js/jquery.bxslider.min.js"></script>       
-    <script type="text/javascript" src="../js/jquery.prettyPhoto.js"></script>  
-    <script type="text/javascript" src="../js/twitter/jquery.tweet.min.js"></script>
-    <script type="text/javascript" src="../js/jquery.parallax-1.1.3.js"></script>   
-    <script type="text/javascript" src="../js/shortcodes.js"></script>   
-    <script type="text/javascript" src="../js/custom.js"></script>
-    
-    <!-- Layer Slider --> 
-    <script type="text/javascript" src="../js/jquery-transit-modified.js"></script> 
-    <script type="text/javascript" src="../js/layerslider.kreaturamedia.jquery.js"></script> 
-    <script type='text/javascript' src="../js/greensock.js"></script> 
-    <script type='text/javascript' src="../js/layerslider.transitions.js"></script> 
-    <!--<script type="text/javascript">var lsjQuery = jQuery;</script>--> 
-    <script type="text/javascript">var lsjQuery = jQuery;</script><script type="text/javascript"> lsjQuery(document).ready(function() { if(typeof lsjQuery.fn.layerSlider == "undefined") { lsShowNotice('layerslider_1','jquery'); } else { lsjQuery("#layerslider_4").layerSlider({responsiveUnder: 1240, layersContainer: 1060, skinsPath: 'js/layerslider/skins/'}) } }); </script>
-    
+       <!--#include file="../CommonFile/inc_footer.asp" -->
 </body>
 </html>

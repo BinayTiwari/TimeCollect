@@ -50,17 +50,7 @@ END IF
         <header>
             <div class="container">
                 <div class="logo">
-                    <a href="../index.html" title="Kids Life"><img src="../images/logo.png" alt="Kids Life" title="Kids Life"></a>
-                </div>
-                <div class="contact-details">
-                    <p class="mail">
-                        <a href="#">contact@kidslife.com</a>
-                        <span class="fa fa-envelope"></span>
-					</p>
-                    <p class="phone-no">
-                        <i>+1 959 552 5963</i>
-                        <span class="fa fa-phone"></span>
-                	</p>        
+                    <a href="../index.asp" title="איגוד הכירורגים בישראל"><img src="../images/logo.png" alt="איגוד הכירורגים בישראל" title="איגוד הכירורגים בישראל"></a>
                 </div>
             </div>
             <!--menu-container starts-->
@@ -90,11 +80,11 @@ END IF
   <tr>
     <td>
 	<input type="hidden" name="Update" type="text" value="<%=updatevalue%>">
-	<input id="SiteName" name="SiteName" type="text" placeholder="Site Name" required="yes" value="<%=SiteName%>"></td>
+	<input id="SiteName" name="SiteName" type="text16" placeholder="Site Name" required value="<%=SiteName%>"></td>
 	<td><select name="Active" required="Yes">
 	<option value="">---Select ----</option>
 	<option value="1" <%IF Active = 1 THEN%> selected <%END IF%>>Active</option>
-	<option value="2" <%IF Active = 2 THEN%> selected <%END IF%>>Deleted</option>
+	<option value="2" <%IF Active = 2 THEN%> selected <%END IF%>>Not Active</option>
 	
 	</select></td>
    </td>
@@ -114,7 +104,7 @@ END IF
   </tr>
   <%
   	DIM arrAvailable
- 	strSQL = "Select SiteID,SiteName,CASE WHEN Active = 1 THEN 'Yes' WHEN Active = 2 THEN 'No' END FROM [TC_Sites] ORDER BY SiteNAme"
+ 	strSQL = "Select SiteID,SiteName,CASE WHEN Active = 1 THEN 'Yes' WHEN Active = 2 THEN 'No' END FROM [TC_Sites] ORDER BY SiteNAme ASC"
 	Set rsCommon = CreateObject("ADODB.Recordset")
     rsCommon.open strSQL,adoCon,3
 						
@@ -155,62 +145,4 @@ Loop %>
                 <!--fullwidth-background starts-->
                 
         <!--footer starts-->
-        <footer>
-            <!--footer-widgets-wrapper starts-->
-            <div class="footer-widgets-wrapper">
-                <!--container starts-->
-                <div class="container">
-                    
-                </div>    
-                <!--container ends-->
-            </div>
-            <!--footer-widgets-wrapper ends-->  
-            <div class="copyright">
-        		<div class="container">
-                	<p class="copyright-info">© 2014 Kids Life. All rights reserved. Design by <a href="http://themeforest.net/user/designthemes" title=""> Buddhathemes </a></p>
-        			<div class="footer-links">
-                        <p>Follow us</p>
-                        <ul class="dt-sc-social-icons">
-                        	<li class="facebook"><a href="#"><img src="../images/facebook.png" alt="" title=""></a></li>
-                            <li class="twitter"><a href="#"><img src="../images/twitter.png" alt="" title=""></a></li>
-                            <li class="gplus"><a href="#"><img src="../images/gplus.png" alt="" title=""></a></li>
-                            <li class="pinterest"><a href="#"><img src="../images/pinterest.png" alt="" title=""></a></li>
-                        </ul>
-                    </div>
-        		</div>
-        	</div>  
-        </footer>
-        <!--footer ends-->
-        
-    </div>
-    <!--wrapper ends-->
-    <a href="#" title="Go to Top" class="back-to-top">To Top ↑</a>
-    <!--Java Scripts-->
-    <script type="text/javascript" src="../js/jquery.js"></script>
-	<script type="text/javascript" src="../js/jquery-migrate.min.js"></script>
-
-   
-	<script type="text/javascript" src="../js/jquery.validate.min.js"></script>
-	<script type="text/javascript" src="../js/jquery-easing-1.3.js"></script>
-    <script type="text/javascript" src="../js/jquery.sticky.js"></script>
-    <script type="text/javascript" src="../js/jquery.nicescroll.min.js"></script>
-    <script type="text/javascript" src="../js/jquery.inview.js"></script>
-    <script type="text/javascript" src="../js/validation.js"></script>
-    <script type="text/javascript" src="../js/jquery.tipTip.minified.js"></script>
-    <script type="text/javascript" src="../js/jquery.bxslider.min.js"></script>       
-    <script type="text/javascript" src="../js/jquery.prettyPhoto.js"></script>  
-    <script type="text/javascript" src="../js/twitter/jquery.tweet.min.js"></script>
-    <script type="text/javascript" src="../js/jquery.parallax-1.1.3.js"></script>   
-    <script type="text/javascript" src="../js/shortcodes.js"></script>   
-    <script type="text/javascript" src="../js/custom.js"></script>
-    
-    <!-- Layer Slider --> 
-    <script type="text/javascript" src="../js/jquery-transit-modified.js"></script> 
-    <script type="text/javascript" src="../js/layerslider.kreaturamedia.jquery.js"></script> 
-    <script type='text/javascript' src="../js/greensock.js"></script> 
-    <script type='text/javascript' src="../js/layerslider.transitions.js"></script> 
-    <!--<script type="text/javascript">var lsjQuery = jQuery;</script>--> 
-    <script type="text/javascript">var lsjQuery = jQuery;</script><script type="text/javascript"> lsjQuery(document).ready(function() { if(typeof lsjQuery.fn.layerSlider == "undefined") { lsShowNotice('layerslider_1','jquery'); } else { lsjQuery("#layerslider_4").layerSlider({responsiveUnder: 1240, layersContainer: 1060, skinsPath: 'js/layerslider/skins/'}) } }); </script>
-    
-</body>
-</html>
+<!--#include file="../CommonFile/inc_footer.asp" -->
