@@ -39,4 +39,11 @@
 <link href='http://fonts.googleapis.com/css?family=Bubblegum+Sans' rel='stylesheet' type='text/css'>
 <!--jquery-->
 <!--script src="js/modernizr-2.6.2.min.js"></script>-->
+<%
+' Turn on page buffering
+ Response.Buffer = True 
+ 
+ ' Turn On Error Handling
+ On Error Resume Next
+%>
 
