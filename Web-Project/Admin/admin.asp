@@ -8,7 +8,7 @@
         <header>
             <div class="container">
                 <div class="logo">
-                    <a href="../index.asp" title="איגוד הכירורגים בישראל"><img src="../images/logo.png" alt="איגוד הכירורגים בישראל" title="איגוד הכירורגים בישראל"></a>
+                    <a href="../start.asp" title="איגוד הכירורגים בישראל"><img src="../images/logo.png" alt="איגוד הכירורגים בישראל" title="איגוד הכירורגים בישראל"></a>
                 </div>
             </div>
             <!--menu-container starts-->
@@ -51,17 +51,38 @@
 	Else 
 		months = month(date) 
 	 END IF 
-	 
-	 strcurrentdate = year(date)  & "-" & months & "-" & day(date)
-	 fromDate = strcurrentdate
+	   IF  day(date) < 10 THEN 
+	 	days = "0" & day(date) 
+	Else 
+		days = day(date) 
+	 END IF 
+	 strcurrentdate = year(date)  & "-" & months & "-" & days
 	 toDate = strcurrentdate
+	 
+	  fromDate = DateAdd("d", date, -7)
+	  IF  month(fromDate) < 10 THEN 
+	 	months = "0" & month(fromDate) 
+	Else 
+		months = month(date) 
+	 END IF 
+	  IF  day(fromDate) < 10 THEN 
+	 	days = "0" & day(fromDate) 
+	Else 
+		days = day(date) 
+	 END IF 
+	
+	 strcurrentdate = year(fromDate)  & "-" & months & "-" & days
+	 fromDate = strcurrentdate
+	
 	ELSE 
 	fromDate = Request.Form("fromDate")
 	toDate = Request.Form("toDate")
 	END IF 
+	''Response.Write(toDate)
+	''Response.Write(toDate)
 	%>
-    <td><input name="fromDate" type="date" placeholder="From Date" required="yes" value="<%=fromDate%>" > </td> 
-	 <td><input name="toDate" type="date" placeholder="To Date" required="yes" value="<%=toDate%>"> </td>
+    <td><input name="fromDate" type="date" placeholder="From Date" required value="<%=fromDate%>" > </td> 
+	 <td><input name="toDate" type="date" placeholder="To Date" required value="<%=toDate%>"> </td>
 	<td >
 	<% 
 	IF SESSION("USerType") = "1" THEN 
@@ -167,17 +188,32 @@ IF Request.ServerVariables("REQUEST_METHOD") = "POST" Then
 
 						
 	IF Request.Form("Report") = "TopUsers" THEN
-		strSQL = " SELECT   TC_Sites.SiteName, TC_Dept.[DeptName ],  TC_TimeCollect.userCardID, 'N/A' AS DATE, 'N/A' As StartTime, 'N/A' AS EndTime, CAST(DATEADD(ms,SUM(DATEDIFF(ms, '00:00:00', CAST(TC_TimeCollect.TotalTime AS time))), '00:00:00') AS TIME) AS totalTime FROM TC_TimeCollect  INNER JOIN TC_Sites ON "&_
- 				 " TC_TimeCollect.siteID = TC_Sites.SiteID INNER JOIN TC_Dept ON TC_TimeCollect.DeptID = TC_Dept.DeptID  INNER JOIN &"&_
-                 " TC_Users ON TC_Dept.DeptID = TC_Users.UserDeptID AND TC_Sites.SiteID = TC_Users.UserSiteID GROUP BY TC_TimeCollect.userCardID, TC_Sites.SiteName, TC_Dept.[DeptName ],DATE HAVING DATE BETWEEN '"&CDATE(Request.Form("fromDate"))&"' and '"&CDATE(Request.Form("toDate"))&"' and TC_Users.UserID ="&Session("UserID")&" order by totalTime Desc"
+	 	IF SESSION("USerType") = "1" THEN  
+			strSQL = " SELECT   TC_Sites.SiteName, TC_Dept.[DeptName ],  TC_TimeCollect.userCardID, 'N/A' AS DATE, 'N/A' As StartTime, 'N/A' AS EndTime, CAST(DATEADD(ms,SUM(DATEDIFF(ms, '00:00:00', CAST(TC_TimeCollect.TotalTime AS time))), '00:00:00') AS TIME) AS totalTime FROM TC_TimeCollect  INNER JOIN TC_Sites ON "&_
+ 				 		" TC_TimeCollect.siteID = TC_Sites.SiteID INNER JOIN TC_Dept ON TC_TimeCollect.DeptID = TC_Dept.DeptID GROUP BY TC_TimeCollect.userCardID, TC_Sites.SiteName, TC_Dept.[DeptName ],DATE,TC_Sites.SiteID,TC_Dept.DeptID HAVING DATE BETWEEN '"&CDATE(Request.Form("fromDate"))&"' and '"&CDATE(Request.Form("toDate"))&"'"
+		ELSE
+			strSQL = " SELECT   TC_Sites.SiteName, TC_Dept.[DeptName ],  TC_TimeCollect.userCardID, 'N/A' AS DATE, 'N/A' As StartTime, 'N/A' AS EndTime, CAST(DATEADD(ms,SUM(DATEDIFF(ms, '00:00:00', CAST(TC_TimeCollect.TotalTime AS time))), '00:00:00') AS TIME) AS totalTime FROM TC_TimeCollect  INNER JOIN TC_Sites ON "&_
+ 				 " TC_TimeCollect.siteID = TC_Sites.SiteID INNER JOIN TC_Dept ON TC_TimeCollect.DeptID = TC_Dept.DeptID  INNER JOIN "&_
+                 " TC_Users ON TC_Dept.DeptID = TC_Users.UserDeptID AND TC_Sites.SiteID = TC_Users.UserSiteID GROUP BY TC_TimeCollect.userCardID, TC_Sites.SiteName, TC_Dept.[DeptName ],DATE,TC_Users.UserID,TC_Sites.SiteID,TC_Dept.DeptID HAVING DATE BETWEEN '"&CDATE(Request.Form("fromDate"))&"' and '"&CDATE(Request.Form("toDate"))&"' and TC_Users.UserID ="&Session("UserID")&" "
+
+		END IF
+		
 	ELSE			   
 
- 		strSQL = " SELECT TC_Sites.SiteName, TC_Dept.[DeptName ], TC_TimeCollect.userCardID, CAST(TC_TimeCollect.[date ] AS DATE), TC_TimeCollect.[StartTime ] , "&_
+		 IF SESSION("USerType") = "1" THEN 
+ 			strSQL = " SELECT TC_Sites.SiteName, TC_Dept.[DeptName ], TC_TimeCollect.userCardID, CAST(TC_TimeCollect.[date ] AS DATE), TC_TimeCollect.[StartTime ] , "&_
 			 " TC_TimeCollect.EndTime, TC_TimeCollect.TotalTime FROM  TC_TimeCollect INNER JOIN TC_Sites ON TC_TimeCollect.siteID = TC_Sites.SiteID INNER JOIN " &_
              " TC_Dept ON TC_TimeCollect.DeptID = TC_Dept.DeptID WHERE DATE BETWEEN '"&CDATE(Request.Form("fromDate"))&"' and '"&CDATE(Request.Form("toDate"))&"' "
-			 
-				IF Request.Form("Site")	<> "" THEN 
-			strSQL = strSQL & " and  TC_Sites.SiteID = '"&Request.Form("Site")&"'"
+		ELSE
+			strSQL = " SELECT TC_Sites.SiteName, TC_Dept.[DeptName ], TC_TimeCollect.userCardID, CAST(TC_TimeCollect.[date ] AS DATE), TC_TimeCollect.[StartTime ] , "&_
+			 " TC_TimeCollect.EndTime, TC_TimeCollect.TotalTime FROM  TC_TimeCollect INNER JOIN TC_Sites ON TC_TimeCollect.siteID = TC_Sites.SiteID INNER JOIN " &_
+             " TC_Dept ON TC_TimeCollect.DeptID = TC_Dept.DeptID INNER JOIN "&_
+             " TC_Users ON TC_Dept.DeptID = TC_Users.UserDeptID AND TC_Sites.SiteID = TC_Users.UserSiteID WHERE DATE BETWEEN '"&CDATE(Request.Form("fromDate"))&"' and '"&CDATE(Request.Form("toDate"))&"'  and TC_Users.UserID ="&Session("UserID")&" "
+	
+		END IF		 
+	END IF	 
+				IF Request.Form("SiteName")	<> "" THEN 
+			strSQL = strSQL & " and  TC_Sites.SiteID = '"&Request.Form("SiteName")&"'"
 		END IF
 		
 		IF Request.Form("department")	<> "" THEN 
@@ -189,8 +225,11 @@ IF Request.ServerVariables("REQUEST_METHOD") = "POST" Then
 			strSQL = strSQL & " and userCardID = '"&Request.Form("txtUserCardID")&"'"
 		END IF
 		
-		strSQL = strSQL & " ORDER BY "&Request.Form("Sortby")&""	 
-	END IF	
+		IF Request.Form("Report") = "TopUsers" THEN
+			strSQL = strSQL & " ORDER BY totalTime Desc"	 
+		ELSE
+			strSQL = strSQL & " ORDER BY "&Request.Form("Sortby")&""	
+		END IF	
 
 	''Response.Write(strSQL)
 		
@@ -235,7 +274,6 @@ END IF
 						<table width="75%"  border="0">
 						<TR><TD colspan="9">TimeCollect data</TD></TR>
   <tr>
-    <td>Time CollectID</td>
     <td>Site Name</td>
     <td>Dept Name</td>
     <td>User Card ID</td>
@@ -277,7 +315,6 @@ END IF
   
 
   <tr>
-    <td><%=rsCommon(0)%></td>
     <td><%=rsCommon(1)%></td>
     <td><%=rsCommon(2)%></td>
     <td><%=rsCommon(3)%></td>
